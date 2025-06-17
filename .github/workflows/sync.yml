@@ -37,3 +37,12 @@ jobs:
             - Mac Apple Silicon: docker-compose-Darwin-arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Configure Git for Gitee
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git remote add gitee https://${{ secrets.GITEE_USERNAME }}:${{ secrets.GITEE_TOKEN }}@gitee.com/ianwusb/docker-compose-installer.git
+      - name: Push to Gitee
+        run: |
+          git push gitee main
+          git push gitee --tags
