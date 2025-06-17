@@ -26,7 +26,7 @@ docker-compose --version
 2. 下载docker-compose-Windows-x86_64.exe文件
 3. 将文件重命名为docker-compose.exe并添加到系统PATH路径中
 4. 在命令提示符中验证安装：
-   ```cmd
+```cmd
 docker-compose --version
 ```
 
@@ -37,12 +37,12 @@ docker-compose --version
    - Intel芯片: docker-compose-Darwin-x86_64
    - 苹果芯片: docker-compose-Darwin-arm64
 3. 将下载的文件移动到/usr/local/bin目录并添加执行权限：
-   ```bash
+```bash
 chmod +x docker-compose-Darwin-*
 sudo mv docker-compose-Darwin-* /usr/local/bin/docker-compose
 ```
 4. 验证安装：
-   ```bash
+```bash
 docker-compose --version
 ```
 
