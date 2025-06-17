@@ -1,0 +1,39 @@
+name: Sync Docker Compose Installers
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up environment
+        run: |
+          mkdir -p downloads
+          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+      - name: Download Linux installer
+        run: |
+          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64 -o downloads/docker-compose-Linux-x86_64
+      - name: Download Windows installer
+        run: |
+          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-Windows-x86_64.exe -o downloads/docker-compose-Windows-x86_64.exe
+      - name: Download Mac installer
+        run: |
+          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-Darwin-x86_64 -o downloads/docker-compose-Darwin-x86_64
+          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-Darwin-arm64 -o downloads/docker-compose-Darwin-arm64
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Docker Compose Installers (Latest)
+          tag_name: ${{ env.RELEASE_TAG }}
+          files: downloads/*
+          overwrite: true
+          body: |
+            官方Docker Compose安装包，每日自动同步
+            - Linux: docker-compose-Linux-x86_64
+            - Windows: docker-compose-Windows-x86_64.exe
+            - Mac Intel: docker-compose-Darwin-x86_64
+            - Mac Apple Silicon: docker-compose-Darwin-arm64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
