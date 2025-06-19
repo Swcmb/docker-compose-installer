@@ -1,0 +1,59 @@
+name: Sync GitHub Release to Gitee
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  sync_to_gitee:
+    name: Sync Release to Gitee
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Download Release Assets
+      run: |
+        mkdir assets
+        gh release download "$GITHUB_REF_NAME" -D ./assets
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Gitee Release and Upload Assets
+      run: |
+        release_title="${{ github.event.release.name }}"
+        release_body="${{ github.event.release.body }}"
+        tag_name="${{ github.event.release.tag_name }}"
+        repo="${{ secrets.GITEE_REPO }}"
+        token="${{ secrets.GITEE_TOKEN }}"
+        username="${{ secrets.GITEE_USERNAME }}"
+
+        # 创建 Release
+        create_response=$(curl -s -X POST "https://gitee.com/api/v5/repos/${repo}/releases?access_token=${token}" \
+          -H "Content-Type: application/json" \
+          -d @- <<EOF
+{
+  "tag_name": "${tag_name}",
+  "name": "${release_title}",
+  "body": "${release_body}",
+  "prerelease": false
+}
+EOF
+        )
+
+        release_id=$(echo "$create_response" | grep -oP '"id":\s*\K\d+')
+
+        echo "Release ID: $release_id"
+
+        # 上传每个资源文件
+        for file in ./assets/*; do
+          filename=$(basename "$file")
+          echo "Uploading: $filename"
+
+          curl -s -X POST "https://gitee.com/api/v5/repos/${repo}/releases/${release_id}/assets?access_token=${token}" \
+            -F "name=${filename}" \
+            -F "attachment=@${file}" > /dev/null
+
+          echo "Uploaded: $filename"
+        done
