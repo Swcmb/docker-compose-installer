@@ -60,6 +60,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install GitHub CLI
+        run: |
+          sudo apt update
+          sudo apt install -y gh jq
+
       - name: Download GitHub Release assets
         run: |
           mkdir -p assets
@@ -85,7 +90,8 @@ jobs:
                   --arg tag_name "$RELEASE_TAG" \
                   --arg name "$RELEASE_NAME" \
                   --arg body "$RELEASE_BODY" \
-                  '{tag_name: $tag_name, name: $name, body: $body, prerelease: false}')")
+                  --arg target_commitish "main" \
+                  '{tag_name: $tag_name, name: $name, body: $body, prerelease: false, target_commitish: $target_commitish}')")
 
           release_id=$(echo "$response" | jq -r '.id')
 
