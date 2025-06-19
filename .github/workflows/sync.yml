@@ -8,22 +8,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up environment
-        run: |
-          mkdir -p downloads
-          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
-      - name: Download Linux installer
-        run: |
-          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64 -o downloads/docker-compose-Linux-x86_64
-      - name: Download Windows installer
-        run: |
-          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-Windows-x86_64.exe -o downloads/docker-compose-Windows-x86_64.exe
-      - name: Create downloads directory
+
+      - name: Set up downloads directory
         run: mkdir -p downloads
-      - name: Download Mac installer
+
+      - name: Set release tag
+        run: echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+
+      - name: Download Linux x86_64 installer
         run: |
-          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-x86_64 -o downloads/docker-compose-Darwin-x86_64
-          curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-arm64 -o downloads/docker-compose-Darwin-arm64
+          curl -fsSL -o downloads/docker-compose-linux-x86_64 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64
+
+      - name: Download Windows x86_64 installer
+        run: |
+          curl -fsSL -o downloads/docker-compose-windows-x86_64.exe https://github.com/docker/compose/releases/latest/download/docker-compose-windows-x86_64.exe
+
+      - name: Download macOS installers
+        run: |
+          curl -fsSL -o downloads/docker-compose-darwin-x86_64 https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-x86_64
+          curl -fsSL -o downloads/docker-compose-darwin-aarch64 https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-aarch64
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -33,17 +37,19 @@ jobs:
           overwrite: true
           body: |
             官方Docker Compose安装包，每日自动同步
-            - Linux: docker-compose-Linux-x86_64
-            - Windows: docker-compose-Windows-x86_64.exe
-            - Mac Intel: docker-compose-Darwin-x86_64
-            - Mac Apple Silicon: docker-compose-Darwin-arm64
+            - Linux: docker-compose-linux-x86_64
+            - Windows: docker-compose-windows-x86_64.exe
+            - Mac Intel: docker-compose-darwin-x86_64
+            - Mac Apple Silicon: docker-compose-darwin-aarch64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Configure Git for Gitee
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git remote add gitee https://${{ secrets.GITEE_USERNAME }}:${{ secrets.GITEE_TOKEN }}@gitee.com/ianwusb/docker-compose-installer.git
+
       - name: Push to Gitee
         run: |
           git push gitee main
