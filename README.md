@@ -1,55 +1,76 @@
-# Docker Compose 国内安装包
 
-解决Docker Compose国内网络问题，自动同步官方安装包到Release
+# 🐳 Docker Compose Installers Sync
 
-## 特点
-- 使用Github Action将官网的安装包定时下载到本项目Release，供国内使用
-- 官方安装包，安全可靠
-- 每天自动定时同步，保证最新
+本项目通过 GitHub Actions 自动每日同步并发布 Docker Compose 各平台安装包，方便在国内或受限网络环境中获取官方安装器。
 
-## Docker Compose安装
+## 📦 已同步安装包
 
-### Linux
-一键安装命令
+每天自动发布以下平台的 Docker Compose 安装包至 GitHub Releases：
+
+### ✅ Linux
+
+- `x86_64`
+- `aarch64`（ARM64）
+- `armv6`
+- `armv7`
+- `ppc64le`
+- `riscv64`
+- `s390x`
+
+### 🍎 macOS
+
+- `x86_64`（Intel）
+- `aarch64`（Apple Silicon）
+
+### 🪟 Windows
+
+- `x86_64`
+- `aarch64`
+
+## 🔄 自动同步机制
+
+- 每天 00:00 UTC 自动同步最新官方版本（使用 GitHub Actions）
+- 可手动点击 GitHub 的 [Actions 页面](https://github.com/Swcmb/docker-compose-installer/actions) 触发同步
+- 安装包文件发布在 [Releases 页面](https://github.com/Swcmb/docker-compose-installer/releases)
+
+## 🛠️ 如何安装
+
+选择对应系统架构，从 Releases 页面下载你需要的版本并赋予可执行权限（Linux/macOS）：
+
+### Linux 示例：
+
 ```bash
-# 下载最新版Docker Compose
-sudo curl -fsSL https://github.com/Swcmb/docker-compose-installer/releases/download/latest/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose
-# 添加执行权限
-sudo chmod +x /usr/local/bin/docker-compose
-# 验证安装
-docker-compose --version
+curl -LO https://github.com/Swcmb/docker-compose-installer/releases/latest/download/docker-compose-linux-x86_64
+chmod +x docker-compose-linux-x86_64
+sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
+docker-compose version
 ```
 
-### Windows
-1. 下载Windows版本安装包，进入本项目的Release
-   https://github.com/Swcmb/docker-compose-installer/releases
-2. 下载docker-compose-Windows-x86_64.exe文件
-3. 将文件重命名为docker-compose.exe并添加到系统PATH路径中
-4. 在命令提示符中验证安装：
-```cmd
-docker-compose --version
-```
+### macOS 示例：
 
-### Mac
-1. 进入本项目的Release，下载Mac系统的安装包
-   https://github.com/Swcmb/docker-compose-installer/releases
-2. 根据CPU架构选择对应的安装包：
-   - Intel芯片: docker-compose-Darwin-x86_64
-   - 苹果芯片: docker-compose-Darwin-arm64
-3. 将下载的文件移动到/usr/local/bin目录并添加执行权限：
 ```bash
-chmod +x docker-compose-Darwin-*
-sudo mv docker-compose-Darwin-* /usr/local/bin/docker-compose
-```
-4. 验证安装：
-```bash
-docker-compose --version
+curl -LO https://github.com/Swcmb/docker-compose-installer/releases/latest/download/docker-compose-darwin-aarch64
+chmod +x docker-compose-darwin-aarch64
+sudo mv docker-compose-darwin-aarch64 /usr/local/bin/docker-compose
+docker-compose version
 ```
 
-## 自动同步说明
-本项目使用GitHub Actions每天自动同步Docker Compose官方最新版本，确保提供的安装包始终为最新稳定版。
+### Windows 示例：
 
-同步时间：每天UTC时间0点（北京时间早上8点）
+从浏览器打开 [Releases 页面](https://github.com/Swcmb/docker-compose-installer/releases)，下载 `.exe` 文件后双击运行，或添加至系统环境变量中使用。
 
-## 项目地址
-- GitHub: https://github.com/Swcmb/docker-compose-installer
+## 💡 项目特点
+
+- 🕒 每日定时自动同步
+- 🌍 解决 GitHub 官方源访问缓慢或下载失败问题
+- 💼 支持多系统多架构
+- 🚀 可用于本地部署或搭建私有镜像站点
+
+## 🔐 权限说明
+
+- 本项目使用 GitHub Actions 自动创建 Release，需要配置 `secrets.RELEASE_TOKEN`，可使用具有 `repo` 权限的 GitHub Personal Access Token（PAT）。
+
+------
+
+欢迎 Star 支持该项目！如有建议或问题欢迎提交 Issue 🙌
+
