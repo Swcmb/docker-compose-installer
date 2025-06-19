@@ -2,21 +2,24 @@ name: Sync Docker Compose Installers
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 每天0点执行
+    - cron: '0 0 * * *'  # 每天0点执行
   workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ steps.set_release_tag.outputs.release_tag }}
 
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set release tag as date
+        id: set_release_tag
+        run: echo "::set-output name=release_tag::$(date +'%Y-%m-%d')"
+
       - name: Set up downloads directory
         run: mkdir -p downloads
-
-      - name: Set release tag as date
-        run: echo "RELEASE_TAG=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Download Linux installers and related files
         run: |
@@ -41,8 +44,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Docker Compose Installers (${{ env.RELEASE_TAG }})
-          tag_name: ${{ env.RELEASE_TAG }}
+          name: Docker Compose Installers (${{ steps.set_release_tag.outputs.release_tag }})
+          tag_name: ${{ steps.set_release_tag.outputs.release_tag }}
           files: downloads/*
           body: |
             官方Docker Compose安装包，每日自动同步
@@ -55,12 +58,21 @@ jobs:
   sync_to_gitee:
     needs: sync
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ jobs.sync.outputs.release_tag }}
+      GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+      GITEE_REPO: ${{ secrets.GITEE_REPO }}
+      RELEASE_NAME: Docker Compose Installers ${{ jobs.sync.outputs.release_tag }}
+      RELEASE_BODY: |
+        官方Docker Compose安装包，每日自动同步
+        - Linux 多平台及架构
+        - macOS Intel / Apple Silicon
+        - Windows 多平台架构
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install GitHub CLI
+      - name: Install GitHub CLI and jq
         run: |
           sudo apt update
           sudo apt install -y gh jq
@@ -68,21 +80,11 @@ jobs:
       - name: Download GitHub Release assets
         run: |
           mkdir -p assets
-          gh release download "${{ env.RELEASE_TAG }}" --dir assets
+          gh release download "${RELEASE_TAG}" --dir assets
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Sync Release to Gitee
-        env:
-          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
-          GITEE_REPO: ${{ secrets.GITEE_REPO }}
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
-          RELEASE_NAME: Docker Compose Installers ${{ env.RELEASE_TAG }}
-          RELEASE_BODY: |
-            官方Docker Compose安装包，每日自动同步
-            - Linux 多平台及架构
-            - macOS Intel / Apple Silicon
-            - Windows 多平台架构
         run: |
           response=$(curl -s -X POST "https://gitee.com/api/v5/repos/${GITEE_REPO}/releases?access_token=${GITEE_TOKEN}" \
             -H "Content-Type: application/json" \
@@ -112,3 +114,4 @@ jobs:
 
             echo "Upload response: $upload_response"
           done
+
