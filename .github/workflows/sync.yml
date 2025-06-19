@@ -1,19 +1,22 @@
 name: Sync Docker Compose Installers
+
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'   # 每天0点执行
   workflow_dispatch:
+
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up downloads directory
         run: mkdir -p downloads
 
-      - name: Set release tag
-        run: echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+      - name: Set release tag as date
+        run: echo "RELEASE_TAG=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Download Linux x86_64 installer
         run: |
@@ -31,10 +34,9 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Docker Compose Installers (Latest)
+          name: Docker Compose Installers (${{ env.RELEASE_TAG }})
           tag_name: ${{ env.RELEASE_TAG }}
           files: downloads/*
-          overwrite: true
           body: |
             官方Docker Compose安装包，每日自动同步
             - Linux: docker-compose-linux-x86_64
@@ -42,7 +44,7 @@ jobs:
             - Mac Intel: docker-compose-darwin-x86_64
             - Mac Apple Silicon: docker-compose-darwin-aarch64
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Configure Git for Gitee
         run: |
