@@ -18,18 +18,66 @@ jobs:
       - name: Set release tag as date
         run: echo "RELEASE_TAG=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
-      - name: Download Linux x86_64 installer
+      - name: Download Linux installers and related files
         run: |
           curl -fsSL -o downloads/docker-compose-linux-x86_64 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64
+          curl -fsSL -o downloads/docker-compose-linux-x86_64.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64.provenance.json
+          curl -fsSL -o downloads/docker-compose-linux-x86_64.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64.sbom.json
+          curl -fsSL -o downloads/docker-compose-linux-x86_64.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64.sha256
 
-      - name: Download Windows x86_64 installer
-        run: |
-          curl -fsSL -o downloads/docker-compose-windows-x86_64.exe https://github.com/docker/compose/releases/latest/download/docker-compose-windows-x86_64.exe
+          curl -fsSL -o downloads/docker-compose-linux-aarch64 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-aarch64
+          curl -fsSL -o downloads/docker-compose-linux-aarch64.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-aarch64.provenance.json
+          curl -fsSL -o downloads/docker-compose-linux-aarch64.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-aarch64.sbom.json
+          curl -fsSL -o downloads/docker-compose-linux-aarch64.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-aarch64.sha256
 
-      - name: Download macOS installers
+          curl -fsSL -o downloads/docker-compose-linux-armv6 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-armv6
+          curl -fsSL -o downloads/docker-compose-linux-armv6.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-armv6.provenance.json
+          curl -fsSL -o downloads/docker-compose-linux-armv6.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-armv6.sbom.json
+          curl -fsSL -o downloads/docker-compose-linux-armv6.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-armv6.sha256
+
+          curl -fsSL -o downloads/docker-compose-linux-armv7 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-armv7
+          curl -fsSL -o downloads/docker-compose-linux-armv7.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-armv7.provenance.json
+          curl -fsSL -o downloads/docker-compose-linux-armv7.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-armv7.sbom.json
+          curl -fsSL -o downloads/docker-compose-linux-armv7.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-armv7.sha256
+
+          curl -fsSL -o downloads/docker-compose-linux-ppc64le https://github.com/docker/compose/releases/latest/download/docker-compose-linux-ppc64le
+          curl -fsSL -o downloads/docker-compose-linux-ppc64le.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-ppc64le.provenance.json
+          curl -fsSL -o downloads/docker-compose-linux-ppc64le.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-ppc64le.sbom.json
+          curl -fsSL -o downloads/docker-compose-linux-ppc64le.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-ppc64le.sha256
+
+          curl -fsSL -o downloads/docker-compose-linux-riscv64 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-riscv64
+          curl -fsSL -o downloads/docker-compose-linux-riscv64.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-riscv64.provenance.json
+          curl -fsSL -o downloads/docker-compose-linux-riscv64.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-riscv64.sbom.json
+          curl -fsSL -o downloads/docker-compose-linux-riscv64.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-riscv64.sha256
+
+          curl -fsSL -o downloads/docker-compose-linux-s390x https://github.com/docker/compose/releases/latest/download/docker-compose-linux-s390x
+          curl -fsSL -o downloads/docker-compose-linux-s390x.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-s390x.provenance.json
+          curl -fsSL -o downloads/docker-compose-linux-s390x.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-linux-s390x.sbom.json
+          curl -fsSL -o downloads/docker-compose-linux-s390x.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-linux-s390x.sha256
+
+      - name: Download macOS installers and related files
         run: |
           curl -fsSL -o downloads/docker-compose-darwin-x86_64 https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-x86_64
+          curl -fsSL -o downloads/docker-compose-darwin-x86_64.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-x86_64.provenance.json
+          curl -fsSL -o downloads/docker-compose-darwin-x86_64.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-x86_64.sbom.json
+          curl -fsSL -o downloads/docker-compose-darwin-x86_64.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-x86_64.sha256
+
           curl -fsSL -o downloads/docker-compose-darwin-aarch64 https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-aarch64
+          curl -fsSL -o downloads/docker-compose-darwin-aarch64.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-aarch64.provenance.json
+          curl -fsSL -o downloads/docker-compose-darwin-aarch64.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-aarch64.sbom.json
+          curl -fsSL -o downloads/docker-compose-darwin-aarch64.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-darwin-aarch64.sha256
+
+      - name: Download Windows installers and related files
+        run: |
+          curl -fsSL -o downloads/docker-compose-windows-x86_64.exe https://github.com/docker/compose/releases/latest/download/docker-compose-windows-x86_64.exe
+          curl -fsSL -o downloads/docker-compose-windows-x86_64.exe.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-windows-x86_64.exe.sha256
+          curl -fsSL -o downloads/docker-compose-windows-x86_64.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-windows-x86_64.provenance.json
+          curl -fsSL -o downloads/docker-compose-windows-x86_64.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-windows-x86_64.sbom.json
+
+          curl -fsSL -o downloads/docker-compose-windows-aarch64.exe https://github.com/docker/compose/releases/latest/download/docker-compose-windows-aarch64.exe
+          curl -fsSL -o downloads/docker-compose-windows-aarch64.exe.sha256 https://github.com/docker/compose/releases/latest/download/docker-compose-windows-aarch64.exe.sha256
+          curl -fsSL -o downloads/docker-compose-windows-aarch64.provenance.json https://github.com/docker/compose/releases/latest/download/docker-compose-windows-aarch64.provenance.json
+          curl -fsSL -o downloads/docker-compose-windows-aarch64.sbom.json https://github.com/docker/compose/releases/latest/download/docker-compose-windows-aarch64.sbom.json
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -39,9 +87,8 @@ jobs:
           files: downloads/*
           body: |
             官方Docker Compose安装包，每日自动同步
-            - Linux: docker-compose-linux-x86_64
-            - Windows: docker-compose-windows-x86_64.exe
-            - Mac Intel: docker-compose-darwin-x86_64
-            - Mac Apple Silicon: docker-compose-darwin-aarch64
+            - Linux 多平台及架构
+            - macOS Intel / Apple Silicon
+            - Windows 多平台架构
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
