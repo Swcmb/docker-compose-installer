@@ -58,16 +58,6 @@ jobs:
   sync_to_gitee:
     needs: sync
     runs-on: ubuntu-latest
-    env:
-      RELEASE_TAG: ${{ jobs.sync.outputs.release_tag }}
-      GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
-      GITEE_REPO: ${{ secrets.GITEE_REPO }}
-      RELEASE_NAME: Docker Compose Installers ${{ jobs.sync.outputs.release_tag }}
-      RELEASE_BODY: |
-        官方Docker Compose安装包，每日自动同步
-        - Linux 多平台及架构
-        - macOS Intel / Apple Silicon
-        - Windows 多平台架构
 
     steps:
       - uses: actions/checkout@v4
@@ -78,13 +68,24 @@ jobs:
           sudo apt install -y gh jq
 
       - name: Download GitHub Release assets
-        run: |
-          mkdir -p assets
-          gh release download "${RELEASE_TAG}" --dir assets
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          RELEASE_TAG: ${{ needs.sync.outputs.release_tag }}
+        run: |
+          mkdir -p assets
+          gh release download "$RELEASE_TAG" --dir assets
 
       - name: Sync Release to Gitee
+        env:
+          RELEASE_TAG: ${{ needs.sync.outputs.release_tag }}
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+          GITEE_REPO: ${{ secrets.GITEE_REPO }}
+          RELEASE_NAME: Docker Compose Installers ${{ needs.sync.outputs.release_tag }}
+          RELEASE_BODY: |
+            官方Docker Compose安装包，每日自动同步
+            - Linux 多平台及架构
+            - macOS Intel / Apple Silicon
+            - Windows 多平台架构
         run: |
           response=$(curl -s -X POST "https://gitee.com/api/v5/repos/${GITEE_REPO}/releases?access_token=${GITEE_TOKEN}" \
             -H "Content-Type: application/json" \
@@ -114,4 +115,3 @@ jobs:
 
             echo "Upload response: $upload_response"
           done
-
