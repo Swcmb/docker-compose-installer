@@ -43,8 +43,8 @@
 
 ```bash
 curl -LO https://github.com/Swcmb/docker-compose-installer/releases/latest/download/docker-compose-linux-x86_64
-# 或从 Gitee 下载：
-# curl -LO https://gitee.com/ianwusb/docker-compose-installer/releases/latest/download/docker-compose-linux-x86_64
+# 或自寻寻找github镜像，如下：
+# curl -LO https://git.yylx.win/https://github.com/Swcmb/docker-compose-installer/releases/download/2025-08-01/docker-compose-linux-x86_64
 
 chmod +x docker-compose-linux-x86_64
 sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
